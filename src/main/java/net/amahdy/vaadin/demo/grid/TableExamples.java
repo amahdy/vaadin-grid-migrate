@@ -68,7 +68,7 @@ import java.util.Locale;
 @SuppressWarnings("deprecation")
 public class TableExamples extends CustomComponent {
 
-    public Component basic() {
+    public Component _000_basic() {
         Table table = new Table("The Brightest Stars");
 
         // Define two columns for the built-in container
@@ -92,7 +92,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component singleSelect() {
+    public Component _001_singleSelect() {
         VerticalLayout layout = new VerticalLayout();
 
         // Table with a component column in non-editable mode
@@ -119,7 +119,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component multiSelect() {
+    public Component _002_multiSelect() {
         VerticalLayout layout = new VerticalLayout();
 
         // Table with a component column in non-editable mode
@@ -145,7 +145,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component components() {
+    public Component _003_components() {
         // Table with a component column in non-editable mode
         final Table table = new Table("My Table");
         table.addContainerProperty("Name", String.class, null);
@@ -174,8 +174,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component nestedTables() {
-
+    public Component _004_nestedTables() {
         // Table with a component column in non-editable mode
         Table table = new Table("My Nested Table");
         table.addContainerProperty("Name", String.class, null);
@@ -212,7 +211,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component interactingComponents() {
+    public Component _005_interactingComponents() {
         // Table with a component column in non-editable mode
         final Table table = new Table("My Table");
         table.addContainerProperty("name", String.class, null);
@@ -260,7 +259,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component beanComponents() {
+    public Component _006_beanComponents() {
         final Table table = new Table("My Table");
 
         BeanItemContainer<ComponentBean> container =
@@ -276,7 +275,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component varyingRows() {
+    public Component _007_varyingRows() {
         VerticalLayout layout = new VerticalLayout();
 
         final Table table = new Table();
@@ -326,7 +325,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component varyingHeightLabels() {
+    public Component _008_varyingHeightLabels() {
         final Table table = new Table();
 
         table.addContainerProperty("column1", Component.class, null);
@@ -349,60 +348,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component cellRenderer() {
-
-        // This should be an interface but can't define such here
-        class CellRenderer {
-            public Component render(int row, int column) {
-                return null;
-            }
-        }
-
-        // A table that uses the renderer to render it's content
-        class RenderedTable extends Table {
-
-            private RenderedTable(int rows, int columns,
-                                 CellRenderer renderer) {
-                for (int i = 0; i < columns; i++)
-                    addContainerProperty("column" + i,
-                            Component.class, null);
-
-                for (int i = 0; i < rows; i++) {
-                    Object cols[] = new Object[columns];
-                    for (int c = 0; c < columns; c++)
-                        cols[c] = renderer.render(i, c);
-                    addItem(cols, i);
-                }
-
-                setPageLength(size());
-            }
-        }
-
-        // Implement the rendering
-        CellRenderer renderer = new CellRenderer() {
-            @Override
-            public Component render(int row, int column) {
-                int height = 5 * row * (1 + column) + 10;
-                Component c;
-                if (column == 0) {
-                    c = new Label("Height " + height);
-                } else {
-                    VerticalLayout l = new VerticalLayout();
-                    l.setWidth("200px");
-                    l.addComponent(new TextField("Hello"));
-                    l.addComponent(new Button("Push Me!"));
-                    c = l;
-                }
-                c.setHeight(height, Unit.PIXELS);
-                return c;
-            }
-        };
-
-        // Create the table using the renderer
-        return new RenderedTable(10, 2, renderer);
-    }
-
-    public Component reverseByIndex() {
+    public Component _009_reverseByIndex() {
         VerticalLayout layout = new VerticalLayout();
 
         Table table = new Table("Normal order");
@@ -428,31 +374,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    /* Just a test, doesn't work. */
-    public Component layouts() {
-
-        Table table = new Table("Wrapping Table");
-        table.setWidth("100%");
-        table.addContainerProperty("item", VerticalLayout.class, null);
-        for (int i = 0; i < 3; i++) {
-            VerticalLayout cellBase = new VerticalLayout();
-            cellBase.setWidth("100%");
-            CssLayout wrapping = new CssLayout();
-            for (int j = 0; j < 60; j++) {
-                Label label = new Label("Box");
-                label.setWidth("200px");
-                label.setHeight("200px");
-
-                wrapping.addComponent(label);
-            }
-            cellBase.addComponent(wrapping);
-            table.addItem(new Object[]{cellBase}, i);
-        }
-        return table;
-    }
-
-    public Component headers() {
-
+    public Component _010_headers() {
         Table table = new Table("Custom Table Headers");
 
         table.addContainerProperty("lastname", String.class, null);
@@ -475,7 +397,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component fakeHeaders() {
+    public Component _011_fakeHeaders() {
         VerticalLayout layout = new VerticalLayout();
 
         final Table table = new Table();
@@ -550,7 +472,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component htmlHeaders() {
+    public Component _012_htmlHeaders() {
         final Table table = new Table();
         table.addContainerProperty("lastname", String.class, null);
         table.addContainerProperty("country", String.class, null);
@@ -585,8 +507,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component footerBasic() {
-
+    public Component _013_footerBasic() {
         // Have a table with a numeric column
         Table table = new Table("Custom Table Footer");
         table.addContainerProperty("Name", String.class, null);
@@ -618,7 +539,7 @@ public class TableExamples extends CustomComponent {
 
     }
 
-    public Component footerSum() {
+    public Component _014_footerSum() {
         VerticalLayout layout = new VerticalLayout();
 
         // Have a table with a numeric column
@@ -697,7 +618,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component headerClick() {
+    public Component _015_headerClick() {
         Table table = Helper.createSmallTable("Custom Table Headers");
 
         // table.setColumnReorderingAllowed(true);
@@ -720,7 +641,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component columnResize() {
+    public Component _016_columnResize() {
         final Table table = Helper.createSmallTable("ColumnResize Events");
 
         table.addColumnResizeListener(evt -> {
@@ -750,7 +671,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component columnReordering() {
+    public Component _017_columnReordering() {
         VerticalLayout layout = new VerticalLayout();
 
         final Table table = Helper.createSmallTable("Reordering Columns");
@@ -766,7 +687,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component columnCollapsing() {
+    public Component _018_columnCollapsing() {
         final Table table = Helper.createSmallTable("Column Collapsing");
 
         // Allow the user to collapse and uncollapse columns
@@ -790,8 +711,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component rowHeaders() {
-
+    public Component _019_rowHeaders() {
         Planet planets[] = {
                 new Planet("Mercury", 0, 0, 0, 0, false),
                 new Planet("Venus", 0, 0, 0, 0, false),
@@ -841,7 +761,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component contextMenu() {
+    public Component _020_contextMenu() {
         // Have a table with some data
         final Table table = new Table("My Table", Helper.generateContent());
         table.setSelectable(true);
@@ -882,8 +802,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component filtering() {
-
+    public Component _021_filtering() {
         final Table table = new Table("Table with column filters");
         table.addContainerProperty("Name", String.class, null);
         table.addContainerProperty("Born", Integer.class, null);
@@ -936,8 +855,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component columnFormattingSimple() {
-
+    public Component _022_columnFormattingSimple() {
         // Create a table that overrides the default property (column) format
         final Table table = new Table("Formatted Table") {
 
@@ -970,8 +888,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component columnFormattingExtended() {
-
+    public Component _023_columnFormattingExtended() {
         // Use a specific locale for formatting decimal numbers
         final Locale locale = new Locale("fi", "FI");
 
@@ -1033,13 +950,14 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component cellStyleGenerator() {
+    public Component _024_cellStyleGenerator() {
         Table table = new Table("Table with Cell Styles");
 
         // Add some columns in the table. In this example, the property
         // IDs of the container are integers so we can determine the
         // column number easily.
-        table.addContainerProperty("0", String.class, null, "", null, null);
+        table.addContainerProperty("0", String.class, null, "", null,
+                null);
         for (int i = 0; i < 8; i++)
             table.addContainerProperty(String.valueOf(i + 1), String.class, null,
                     String.valueOf((char) (65 + i)), null, null);
@@ -1081,7 +999,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component editorForm() {
+    public Component _025_editorForm() {
         VerticalLayout layout = new VerticalLayout();
 
         // Create a container for such beans
@@ -1230,7 +1148,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component scrollToItem() {
+    public Component _026_scrollToItem() {
         VerticalLayout layout = new VerticalLayout();
 
         // Have some data
@@ -1242,19 +1160,19 @@ public class TableExamples extends CustomComponent {
 
         // Pick up some item
         Object itemId = container.getIdByIndex(container.size() / 2);
-        layout.addComponent(new Label("Scrolling to... " +
-                container.getContainerProperty(itemId, "name")));
 
-        // Scroll the table to that item
-        table.setCurrentPageFirstItemId(itemId);
+        Button button = new Button("Scroll to item #" + itemId, evt -> {
+            // Scroll the table to that item
+            table.setCurrentPageFirstItemId(itemId);
+        });
 
         table.setPageLength(10);
-        layout.addComponent(table);
+        layout.addComponents(table, button);
 
         return layout;
     }
 
-    public Component removeAllItems() {
+    public Component _027_removeAllItems() {
         VerticalLayout layout = new VerticalLayout();
 
         // Have some data
@@ -1277,7 +1195,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component detailsShrink() {
+    public Component _028_detailsShrink() {
         VerticalLayout layout = new VerticalLayout();
 
         Panel panel = new Panel("A fixed-size area for the stuff");
@@ -1335,7 +1253,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component cssInjection() {
+    public Component _029_cssInjection() {
         Table table = new Table("Colorful Table");
 
         table.setPageLength(16);
@@ -1372,7 +1290,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    public Component editable() {
+    public Component _030_editable() {
         VerticalLayout layout = new VerticalLayout();
 
         // Table with a component column in non-editable mode
@@ -1437,7 +1355,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component editableHeights() {
+    public Component _031_editableHeights() {
         VerticalLayout layout = new VerticalLayout();
 
         // Have a container with some data
@@ -1498,7 +1416,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component comboBox() {
+    public Component _032_comboBox() {
         VerticalLayout layout = new VerticalLayout();
 
         final Table table = new Table("My Table");
@@ -1556,7 +1474,7 @@ public class TableExamples extends CustomComponent {
             table.addItem(item, item[0]);
         }
 
-        layout.addComponent(table);
+        layout.addComponent(new Panel(table));
 
         final CheckBox editable = new CheckBox("Editable", true);
         editable.addValueChangeListener(event -> table.setEditable(editable.getValue()));
@@ -1568,7 +1486,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component buffering() {
+    public Component _033_buffering() {
         VerticalLayout layout = new VerticalLayout();
 
         // The data model + some data
@@ -1626,7 +1544,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component spreadsheet() {
+    public Component _034_spreadsheet() {
         VerticalLayout layout = new VerticalLayout();
 
             // The data model + some data
@@ -1715,7 +1633,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component longTable() {
+    public Component _035_longTable() {
         VerticalLayout layout = new VerticalLayout();
 
         // A lot of example data
@@ -1738,7 +1656,7 @@ public class TableExamples extends CustomComponent {
         return layout;
     }
 
-    public Component adding() {
+    public Component _036_adding() {
         // The data model + some data
         BeanItemContainer<Bean> beans =
                 new BeanItemContainer<>(Bean.class);

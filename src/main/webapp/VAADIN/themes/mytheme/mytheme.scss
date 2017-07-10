@@ -34,4 +34,19 @@
 @mixin mytheme {
   @include valo;
 
+  .v-table-cell-content-green {
+    background-color: green;
+  }
+
+  .v-table-cell-content-black {
+    background-color: black;
+  }
+
+  .v-table-cell-content-white {
+    background-color: white;
+  }
+
+  .v-table-cell-content-rowheader {
+    background-color: gray;
+  }
 }
