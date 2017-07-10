@@ -1733,6 +1733,8 @@ public class TableExamples extends CustomComponent {
         table.setPageLength(8);
         table.setEditable(true);
 
+        layout.addComponent(table);
+
         return layout;
     }
 
