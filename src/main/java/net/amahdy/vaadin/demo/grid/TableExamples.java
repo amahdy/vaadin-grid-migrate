@@ -52,6 +52,7 @@ import net.amahdy.vaadin.demo.grid.data.Bean;
 import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -79,7 +80,7 @@ public class TableExamples extends CustomComponent {
         };
 
         IndexedContainer container = new IndexedContainer(Arrays.asList(data));
-        Grid table = new Grid("The Brightest Stars", container);
+        Gridv7 table = new Gridv7("The Brightest Stars", container);
 
         // Define two columns for the built-in container
         container.addContainerProperty("Name", String.class, null);
