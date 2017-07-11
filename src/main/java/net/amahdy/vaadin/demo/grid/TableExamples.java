@@ -6,6 +6,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -13,6 +14,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -34,7 +36,6 @@ import com.vaadin.v7.data.util.PropertyValueGenerator;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
-import com.vaadin.v7.shared.ui.grid.HeightMode;
 import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
@@ -42,7 +43,6 @@ import com.vaadin.v7.ui.DateField;
 import com.vaadin.v7.ui.DefaultFieldFactory;
 import com.vaadin.v7.ui.Field;
 import com.vaadin.v7.ui.Form;
-import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.Table.ColumnHeaderMode;
 import com.vaadin.v7.ui.TableFieldFactory;
@@ -52,7 +52,6 @@ import net.amahdy.vaadin.demo.grid.data.Bean;
 import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -79,21 +78,16 @@ public class TableExamples extends CustomComponent {
                 {"Alpha Centauri", -0.01f}
         };
 
-        IndexedContainer container = new IndexedContainer(Arrays.asList(data));
-        Gridv7 table = new Gridv7("The Brightest Stars", container);
+        Grid<Object[]> table = new Grid<>("The Brightest Stars");
+        table.setItems(data);
 
         // Define two columns for the built-in container
-        container.addContainerProperty("Name", String.class, null);
-        container.addContainerProperty("Mag", Float.class, null);
-
-        for(Object[] item: data) {
-            container.getItem(item).getItemProperty("Name").setValue(item[0]);
-            container.getItem(item).getItemProperty("Mag").setValue(item[1]);
-        }
+        table.addColumn(v -> v[0]).setCaption("Name");
+        table.addColumn(v -> v[1]).setCaption("Mag");
 
         // Show exactly the currently contained rows (items)
         table.setHeightMode(HeightMode.ROW);
-        table.setHeightByRows(container.size());
+        table.setHeightByRows(data.length);
 
         // Default in Table
         table.setSelectionMode(Grid.SelectionMode.NONE);
