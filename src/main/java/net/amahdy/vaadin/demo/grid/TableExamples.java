@@ -34,6 +34,7 @@ import com.vaadin.v7.data.util.PropertyValueGenerator;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
+import com.vaadin.v7.shared.ui.grid.HeightMode;
 import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
@@ -41,6 +42,7 @@ import com.vaadin.v7.ui.DateField;
 import com.vaadin.v7.ui.DefaultFieldFactory;
 import com.vaadin.v7.ui.Field;
 import com.vaadin.v7.ui.Form;
+import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.Table.ColumnHeaderMode;
 import com.vaadin.v7.ui.TableFieldFactory;
@@ -69,25 +71,37 @@ import java.util.Locale;
 public class TableExamples extends CustomComponent {
 
     public Component _000_basic() {
-        Table table = new Table("The Brightest Stars");
+        IndexedContainer container = new IndexedContainer();
+        Grid table = new Grid("The Brightest Stars", container);
 
         // Define two columns for the built-in container
-        table.addContainerProperty("Name", String.class, null);
-        table.addContainerProperty("Mag", Float.class, null);
+        container.addContainerProperty("Name", String.class, null);
+        container.addContainerProperty("Mag", Float.class, null);
 
         // Add a row the hard way
-        Object newItemId = table.addItem();
-        Item row1 = table.getItem(newItemId);
-        row1.getItemProperty("Name").setValue("Sirius");
-        row1.getItemProperty("Mag").setValue(-1.46f);
+        Object newItemId = container.addItem();
+        Item itemId = container.getItem(newItemId);
+        itemId.getItemProperty("Name").setValue("Sirius");
+        itemId.getItemProperty("Mag").setValue(-1.46f);
 
-        // Add a few other rows using shorthand addItem()
-        table.addItem(new Object[]{"Canopus", -0.72f}, 2);
-        table.addItem(new Object[]{"Arcturus", -0.04f}, 3);
-        table.addItem(new Object[]{"Alpha Centauri", -0.01f}, 4);
+        itemId = container.addItem(2);
+        itemId.getItemProperty("Name").setValue("Canopus");
+        itemId.getItemProperty("Mag").setValue(-0.72f);
+
+        itemId = container.addItem(3);
+        itemId.getItemProperty("Name").setValue("Arcturus");
+        itemId.getItemProperty("Mag").setValue(-0.04f);
+
+        itemId = container.addItem(4);
+        itemId.getItemProperty("Name").setValue("Alpha Centauri");
+        itemId.getItemProperty("Mag").setValue(-0.01f);
 
         // Show exactly the currently contained rows (items)
-        table.setPageLength(table.size());
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(container.size());
+
+        // Default in Table
+        table.setSelectionMode(Grid.SelectionMode.NONE);
 
         return table;
     }
