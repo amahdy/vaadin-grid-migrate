@@ -71,30 +71,24 @@ import java.util.Locale;
 public class TableExamples extends CustomComponent {
 
     public Component _000_basic() {
-        IndexedContainer container = new IndexedContainer();
+        Object[][] data = {
+                {"Sirius", -1.46f},
+                {"Canopus", -0.72f},
+                {"Arcturus", -0.04f},
+                {"Alpha Centauri", -0.01f}
+        };
+
+        IndexedContainer container = new IndexedContainer(Arrays.asList(data));
         Grid table = new Grid("The Brightest Stars", container);
 
         // Define two columns for the built-in container
         container.addContainerProperty("Name", String.class, null);
         container.addContainerProperty("Mag", Float.class, null);
 
-        // Add a row the hard way
-        Object newItemId = container.addItem();
-        Item itemId = container.getItem(newItemId);
-        itemId.getItemProperty("Name").setValue("Sirius");
-        itemId.getItemProperty("Mag").setValue(-1.46f);
-
-        itemId = container.addItem(2);
-        itemId.getItemProperty("Name").setValue("Canopus");
-        itemId.getItemProperty("Mag").setValue(-0.72f);
-
-        itemId = container.addItem(3);
-        itemId.getItemProperty("Name").setValue("Arcturus");
-        itemId.getItemProperty("Mag").setValue(-0.04f);
-
-        itemId = container.addItem(4);
-        itemId.getItemProperty("Name").setValue("Alpha Centauri");
-        itemId.getItemProperty("Mag").setValue(-0.01f);
+        for(Object[] item: data) {
+            container.getItem(item).getItemProperty("Name").setValue(item[0]);
+            container.getItem(item).getItemProperty("Mag").setValue(item[1]);
+        }
 
         // Show exactly the currently contained rows (items)
         table.setHeightMode(HeightMode.ROW);
