@@ -52,7 +52,7 @@ import net.amahdy.vaadin.demo.grid.data.Bean;
 import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
+import net.amahdy.vaadin.demo.grid.data.Scientist;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -100,19 +100,20 @@ public class TableExamples extends CustomComponent {
         VerticalLayout layout = new VerticalLayout();
 
         // Table with a component column in non-editable mode
-        Gridv7 table = new Gridv7("Important People",
-                Helper.generateContent());
-        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        Grid<Scientist> table = new Grid<>(Scientist.class);
+        table.setCaption("Important People");
+        table.setItems(Helper.generateScientists());
+        table.setHeightMode(HeightMode.ROW);
         table.setHeightByRows(10);
 
         // Optional line, this is the default:
-        table.setSelectionMode(Gridv7.SelectionMode.SINGLE);
+        table.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         // Handle selection changes
         table.addSelectionListener(event -> {
-            if (table.getSelectedRow() != null)
+            if (table.asSingleSelect().getValue() != null)
                 layout.addComponent(new Label("Selected item " +
-                        table.getSelectedRow()));
+                        table.asSingleSelect().getValue()));
             else // Item deselected
                 layout.addComponent(new Label("Nothing selected"));
         });

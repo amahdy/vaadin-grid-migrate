@@ -2,11 +2,31 @@ package net.amahdy.vaadin.demo.grid.util;
 
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.ui.Table;
+import net.amahdy.vaadin.demo.grid.data.Scientist;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by amahdy on 7/7/17.
  */
 public abstract class Helper {
+
+    public static List<Scientist> generateScientists() {
+        List<Scientist> scientists = new ArrayList<>();
+        String[] firstnames = new String[]{"Isaac", "Ada", "Charles", "Douglas"};
+        String[] lastnames = new String[]{"Newton", "Lovelace", "Darwin", "Adams"};
+        String[] cities = new String[]{"London", "Oxford", "Innsbruck", "Turku"};
+        for (int i = 0; i < 1000; i++) {
+            Scientist scientist = new Scientist();
+            scientist.setName(firstnames[(int) (Math.random() * 4)] + " " + lastnames[(int) (Math.random() * 4)]);
+            scientist.setCity(cities[(int) (Math.random() * 4)]);
+            scientist.setYear(1800 + (int) (Math.random() * 200));
+            scientists.add(scientist);
+        }
+
+        return scientists;
+    }
 
     public static IndexedContainer generateContent() {
         IndexedContainer container = new IndexedContainer();
