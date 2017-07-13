@@ -53,6 +53,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -126,23 +127,17 @@ public class TableExamples extends CustomComponent {
         VerticalLayout layout = new VerticalLayout();
 
         // Table with a component column in non-editable mode
-        Table table = new Table("Important People",
+        Gridv7 table = new Gridv7("Important People",
                 Helper.generateContent());
-        table.setPageLength(10);
+        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightByRows(10);
 
-        // Allow selecting
-        table.setSelectable(true);
-
-        // Trigger selection change events immediately
-        table.setImmediate(true);
-
-        // Trigger selection change events immediately
-        table.setMultiSelect(true);
+        table.setSelectionMode(Gridv7.SelectionMode.MULTI);
 
         // Handle selection changes
-        table.addValueChangeListener(event -> // Java 8
+        table.addSelectionListener(event ->
                 layout.addComponent(new Label("Selected items " +
-                        table.getValue().toString())));
+                        table.getSelectedRows())));
         layout.addComponent(table);
 
         return layout;
