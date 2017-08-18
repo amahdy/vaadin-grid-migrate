@@ -65,6 +65,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("deprecation")
@@ -268,17 +269,19 @@ public class TableExamples extends CustomComponent {
     }
 
     public Component _006_beanComponents() {
-        final Table table = new Table("My Table");
+        final Grid<ComponentBean> table = new Grid<>("My Table");
 
-        BeanItemContainer<ComponentBean> container =
-                new BeanItemContainer<>(ComponentBean.class);
+        List<ComponentBean> items = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            container.addBean(new ComponentBean("Hello", true));
-            container.addBean(new ComponentBean("There", false));
+            items.add(new ComponentBean("Hello", true));
+            items.add(new ComponentBean("There", false));
         }
-        table.setContainerDataSource(container);
+        table.setItems(items);
+        table.addComponentColumn(ComponentBean::getTextfield).setCaption("Hello");
+        table.addComponentColumn(ComponentBean::getCheckbox).setCaption("There");
 
-        table.setPageLength(6);
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(6);
 
         return table;
     }
