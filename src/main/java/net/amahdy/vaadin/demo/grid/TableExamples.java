@@ -212,49 +212,55 @@ public class TableExamples extends CustomComponent {
 
     public Component _005_interactingComponents() {
         // Table with a component column in non-editable mode
-        final Table table = new Table("My Table");
-        table.addContainerProperty("name", String.class, null);
-        table.addContainerProperty("description", TextArea.class, null);
-        table.addContainerProperty("delete", CheckBox.class, null);
+        final Grid<String[]> table = new Grid<>("My Table");
+        table.setWidth("100%");
+        table.setRowHeight(70);
 
         // Insert this data
-        String people[][] = {{"Galileo", "Liked to go around the Sun"},
-                {"Monnier", "Liked star charts"},
-                {"Väisälä", "Liked optics"},
-                {"Oterma", "Liked comets"},
+        String people[][] = {
+                {"Galileo", "Liked to go around the Sun", "0"},
+                {"Monnier", "Liked star charts", "0"},
+                {"Väisälä", "Liked optics", "0"},
+                {"Oterma", "Liked comets", "0"},
                 {"Valtaoja", "Likes cosmology and still " +
-                        "lives unlike the others above"},
+                        "lives unlike the others above", "0"},
         };
 
-        // Insert the data and the additional component column
-        for (int i = 0; i < people.length; i++) {
-            TextArea area = new TextArea(null, people[i][1]);
+        table.setItems(people);
+        table.addColumn(p -> p[0]).setCaption("Name");
+        table.addComponentColumn(p -> {
+            TextArea area = new TextArea(null, p[1]);
             area.setRows(2);
+            if(p[2].equals("0")) {
+                area.setEnabled(true);
+            }else {
+                area.setEnabled(false);
+            }
+            return area;
+        }).setCaption("Description");
+        table.addComponentColumn(p -> {
+            final com.vaadin.ui.CheckBox checkbox = new com.vaadin.ui.CheckBox();
+            if(p[2].equals("0")) {
+                checkbox.setValue(false);
+            }else {
+                checkbox.setValue(true);
+            }
 
-            final CheckBox checkbox = new CheckBox();
-            checkbox.setData(i); // Store item ID
             checkbox.addValueChangeListener(evt -> {
-
-                    // Get the stored item ID
-                    Object itemId = checkbox.getData();
-
-                    // As the property (column) type is a component type,
-                    // we just get the property and its value to get the component.
-                    TextArea textArea = ((TextArea) table.getContainerProperty
-                            (itemId, "description").getValue());
-
-                    // Modify the referenced component
-                    boolean value = checkbox.getValue();
-                    textArea.setEnabled(!value);
+                boolean value = checkbox.getValue();
+                if(value) {
+                    p[2] = "1";
+                }else {
+                    p[2] = "0";
+                }
+                table.getDataProvider().refreshItem(p);
             });
-            checkbox.setImmediate(true);
 
-            // Add an item with two components
-            table.addItem(new Object[]{people[i][0], area, checkbox}, i);
-        }
+            return checkbox;
+        }).setCaption("Delete");
 
-        table.setPageLength(table.size());
-
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(people.length);
         return table;
     }
 
