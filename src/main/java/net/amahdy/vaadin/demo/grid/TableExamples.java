@@ -44,7 +44,6 @@ import com.vaadin.v7.ui.DefaultFieldFactory;
 import com.vaadin.v7.ui.Field;
 import com.vaadin.v7.ui.Form;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.Table.ColumnHeaderMode;
 import com.vaadin.v7.ui.TableFieldFactory;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
@@ -175,11 +174,9 @@ public class TableExamples extends CustomComponent {
 
     public Component _004_nestedTables() {
         // Table with a component column in non-editable mode
-        Table table = new Table("My Nested Table");
-        table.addContainerProperty("Name", String.class, null);
-        table.addContainerProperty("Moons", Table.class, null);
-        table.setColumnWidth("Moons", 120); // To avoid scrollbars
-        table.setWidth("200px");            // To avoid scrollbars
+        Grid<String[]> table = new Grid<>("My Nested Table");
+        table.setWidth("250px");
+        table.setRowHeight(200);
 
         // Insert this data
         String planets[][] = {{"Mercury"},
@@ -191,22 +188,28 @@ public class TableExamples extends CustomComponent {
                 {"Uranus", "Miranda", "Ariel", "Umbriel", "Titania", "Oberon"},
                 {"Neptune", "Triton", "Proteus", "Nereid", "Larissa"}};
 
-        // Insert the data and the additional component column
-        for (int i = 0; i < planets.length; i++) {
-            Table moonTable = new Table();
-            moonTable.addContainerProperty("Name", String.class, null);
-            moonTable.setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
-            moonTable.setWidth("100px");
+        table.setItems(planets);
+        table.addColumn(p -> p[0]).setCaption("Name");
+        table.addComponentColumn(p -> {
+            Grid<String> moonTable = new Grid<>();
+            moonTable.removeHeaderRow(0);
+            moonTable.setWidth("120px");
 
-            for (int j = 1; j < planets[i].length; j++)
-                moonTable.addItem(new String[]{planets[i][j]}, j);
+            String[] moons = new String[p.length - 1];
+            System.arraycopy(p, 0, moons, 0, moons.length);
+
+            moonTable.setItems(moons);
+            moonTable.addColumn(String::toString);
 
             // Should be fixed height or there will be trouble
-            moonTable.setPageLength(4);
+            moonTable.setHeightMode(HeightMode.ROW);
+            moonTable.setHeightByRows(4);
 
-            table.addItem(new Object[]{planets[i][0], moonTable}, i);
-        }
-        table.setPageLength(table.size());
+            return moonTable;
+        }).setCaption("Moons").setWidth(170);
+
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(planets.length);
         return table;
     }
 
