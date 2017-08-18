@@ -145,13 +145,13 @@ public class TableExamples extends CustomComponent {
 
     public Component _003_components() {
         // Table with a component column in non-editable mode
-        final Table table = new Table("My Table");
-        table.addContainerProperty("Name", String.class, null);
-        table.addContainerProperty("Description", TextArea.class, null);
-        table.addContainerProperty("Delete", CheckBox.class, null);
+        final Grid<String[]> table = new Grid<>("My Table");
+        table.setWidth("100%");
+        table.setRowHeight(70);
 
         // Insert this data
-        String people[][] = {{"Galileo", "Liked to go around the Sun"},
+        String people[][] = {
+                {"Galileo", "Liked to go around the Sun"},
                 {"Monnier", "Liked star charts"},
                 {"Väisälä", "Liked optics"},
                 {"Oterma", "Liked comets"},
@@ -159,16 +159,17 @@ public class TableExamples extends CustomComponent {
                         "lives unlike the others above"},
         };
 
-        // Insert the data and the additional component column
-        for (int i = 0; i < people.length; i++) {
-            TextArea area = new TextArea(null, people[i][1]);
+        table.setItems(people);
+        table.addColumn(p -> p[0]).setCaption("Name");
+        table.addComponentColumn(p -> {
+            TextArea area = new TextArea(null, p[1]);
             area.setRows(2);
+            return area;
+        }).setCaption("Description");
+        table.addComponentColumn(p -> new com.vaadin.ui.CheckBox()).setCaption("Delete");
 
-            // Add an item with two components
-            Object obj[] = {people[i][0], area, new CheckBox()};
-            table.addItem(obj, i);
-        }
-        table.setPageLength(table.size());
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(people.length);
         return table;
     }
 
