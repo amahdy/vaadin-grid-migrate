@@ -44,10 +44,10 @@ import com.vaadin.v7.ui.DefaultFieldFactory;
 import com.vaadin.v7.ui.Field;
 import com.vaadin.v7.ui.Form;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.TableFieldFactory;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
 import net.amahdy.vaadin.demo.grid.data.Bean;
+import net.amahdy.vaadin.demo.grid.data.Bodies;
 import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
@@ -1430,69 +1430,56 @@ public class TableExamples extends CustomComponent {
     public Component _032_comboBox() {
         VerticalLayout layout = new VerticalLayout();
 
-        final Table table = new Table("My Table");
-        table.addContainerProperty("Name", String.class, null);
-        table.addContainerProperty("Classification", String.class, null);
-        table.addContainerProperty("Population", String.class, null);
-        for (int col = 3; col < 15; col++)
-            table.addContainerProperty("Col " + col, String.class, null);
+        final Grid<Bodies> table = new Grid<>("My Table");
+        table.setWidth("100%");
 
-        class MyFactory implements TableFieldFactory {
+        Bodies bodies[] = new Bodies[11];
+        bodies[0] = new Bodies("Mercury", "Planet", "Nobody");
+        bodies[1] = new Bodies("Venus", "Planet", "Women");
+        bodies[2] = new Bodies("Earth", "Planet", "People");
+        bodies[3] = new Bodies("Mars", "Planet", "Men");
+        bodies[4] = new Bodies("Ceres", "Minor Planet", "Nobody");
+        bodies[5] = new Bodies("Jupiter", "Planet", "Monoliths");
+        bodies[6] = new Bodies("Saturn", "Planet", "Nobody");
+        bodies[7] = new Bodies("Uranus", "Planet", "Nobody");
+        bodies[8] = new Bodies("Neptune", "Planet", "Nobody");
+        bodies[9] = new Bodies("Pluto", "Plutoid", "Plutonians");
+        bodies[10] = new Bodies("Eris", "Minor Planet", "Plutonians");
 
-            public Field<?> createField(Container container, Object itemId,
-                                        Object propertyId, Component uiContext) {
-                ComboBox box = new ComboBox();
-                String[] items;
-                if ("Name".equals(propertyId))
-                    items = new String[]{"Mercury", "Venus", "Earth", "Mars",
-                            "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
-                            "Ceres", "Eris"};
-                else if ("Classification".equals(propertyId))
-                    items = new String[]{"Planet", "Minor Planet", "Plutoid",
-                            "Dwarf Planet"};
-                else if ("Population".equals(propertyId))
-                    items = new String[]{"Nobody", "People", "Women", "Men",
-                            "Martians", "Monoliths", "Plutonians"};
-                else
-                    return new TextField();
+        com.vaadin.ui.ComboBox<String> nameCb = new com.vaadin.ui.ComboBox<>();
+        nameCb.setItems("Mercury", "Venus", "Earth", "Mars",
+                        "Jupiter", "Saturn", "Uranus", "Neptune",
+                        "Pluto", "Ceres", "Eris");
 
-                for (String item: items)
-                    box.addItem(item);
-                return box;
-            }
+        com.vaadin.ui.ComboBox<String> classificationCb = new com.vaadin.ui.ComboBox<>();
+        classificationCb.setItems("Planet", "Minor Planet", "Plutoid", "Dwarf Planet");
+
+        com.vaadin.ui.ComboBox<String> populationCb = new com.vaadin.ui.ComboBox<>();
+        populationCb.setItems("Nobody", "People", "Women", "Men", "Martians", "Monoliths", "Plutonians");
+
+        table.setItems(bodies);
+        table.addColumn(Bodies::getName).setCaption("Name")
+                .setEditorComponent(nameCb, Bodies::setName);
+        table.addColumn(Bodies::getClassification).setCaption("Classification")
+                .setEditorComponent(classificationCb, Bodies::setClassification);
+        table.addColumn(Bodies::getPopulation).setCaption("Population")
+                .setEditorComponent(populationCb, Bodies::setPopulation);
+        for (int col = 3; col < 15; col++) {
+            int finalCol = col;
+            table.addColumn(s -> "Col " + finalCol).setCaption("Col " + col);
         }
-        table.setTableFieldFactory(new MyFactory());
 
-        String bodies[][] = {
-                {"Mercury", "Planet", "Nobody"},
-                {"Venus", "Planet", "Women"},
-                {"Earth", "Planet", "People"},
-                {"Mars", "Planet", "Men"},
-                {"Ceres", "Minor Planet", "Nobody"},
-                {"Jupiter", "Planet", "Monoliths"},
-                {"Saturn", "Planet", "Nobody"},
-                {"Uranus", "Planet", "Nobody"},
-                {"Neptune", "Planet", "Nobody"},
-                {"Pluto", "Plutoid", "Plutonians"},
-                {"Eris", "Minor Planet", "Plutonians"}};
-        for (String[] body: bodies) {
-            String item[] = new String[15];
-            for (int col = 0; col < item.length; col++)
-                if (col < body.length)
-                    item[col] = body[col];
-                else
-                    item[col] = "Col " + col;
-            table.addItem(item, item[0]);
-        }
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(bodies.length);
 
         layout.addComponent(new Panel(table));
 
         final CheckBox editable = new CheckBox("Editable", true);
-        editable.addValueChangeListener(event -> table.setEditable(editable.getValue()));
+        editable.addValueChangeListener(event -> table.getEditor().setEnabled(editable.getValue()));
         editable.setImmediate(true);
         layout.addComponent(editable);
 
-        table.setEditable(true);
+        table.getEditor().setEnabled(true);
 
         return layout;
     }
