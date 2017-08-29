@@ -53,7 +53,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -69,6 +68,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SuppressWarnings("deprecation")
 public class TableExamples extends CustomComponent {
@@ -362,28 +363,25 @@ public class TableExamples extends CustomComponent {
     }
 
     public Component _009_reverseByIndex() {
-        Gridv7 table = new Gridv7("Normal order");
+        List<Integer> items =
+                IntStream.rangeClosed(0, 4).boxed().collect(Collectors.toList());
+
+        Grid<Integer> table = new Grid<>("Normal order");
         table.setWidth("100px");
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("index", Integer.class, 0);
-        for (int i = 0; i < 5; i++)
-            container.getItem(container.addItem()).getItemProperty("index").setValue(i);
-        table.setContainerDataSource(container);
+        table.setItems(items);
+        table.addColumn(Integer::intValue).setCaption("Index").setId("index");
         table.sort("index", SortDirection.ASCENDING);
 
-        Gridv7 reverse = new Gridv7("Reverse order");
+        Grid<Integer> reverse = new Grid<>("Reverse order");
         reverse.setWidth("100px");
-        container = new IndexedContainer();
-        container.addContainerProperty("index", Integer.class, 0);
-        for (int i = 0; i < 5; i++)
-            container.getItem(container.addItem()).getItemProperty("index").setValue(i);
-        reverse.setContainerDataSource(container);
+        reverse.setItems(items);
+        reverse.addColumn(Integer::intValue).setCaption("Index").setId("index");
         reverse.sort("index", SortDirection.DESCENDING);
 
-        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
-        table.setHeightByRows(table.getContainerDataSource().size());
-        reverse.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
-        reverse.setHeightByRows(reverse.getContainerDataSource().size());
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(items.size());
+        reverse.setHeightMode(HeightMode.ROW);
+        reverse.setHeightByRows(items.size());
 
         return new HorizontalLayout(table, reverse);
     }
