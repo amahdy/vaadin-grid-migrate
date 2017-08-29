@@ -47,12 +47,14 @@ import com.vaadin.v7.ui.Form;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
+import com.vaadin.v7.ui.renderers.ImageRenderer;
 import net.amahdy.vaadin.demo.grid.data.Bean;
 import net.amahdy.vaadin.demo.grid.data.Bodies;
 import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -760,15 +762,17 @@ public class TableExamples extends CustomComponent {
         });
 
         // Bind it to a table
-        Table table = new Table("Custom Column Headers", gpc);
-        table.setVisibleColumns("name");
-
-        // Use only icons in the row header
-        table.setRowHeaderMode(Table.RowHeaderMode.ICON_ONLY);
-        table.setItemIconPropertyId("icon");
+        Gridv7 table = new Gridv7("Custom Column Headers");
+        table.addStyleName("rowheaders");
+        table.setContainerDataSource(gpc);
+        table.setWidth("250px");
+        table.setColumns("icon", "name");
+        table.getColumn("icon").setRenderer(new ImageRenderer());
+        table.setFrozenColumnCount(1);
 
         // Adjust the table height a bit
-        table.setPageLength(table.size());
+        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightByRows(table.getContainerDataSource().size());
 
         return table;
     }

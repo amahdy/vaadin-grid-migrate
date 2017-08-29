@@ -46,7 +46,7 @@
     background-color: white;
   }
 
-  .v-table-cell-content-rowheader {
+  .rowheaders td:first-child {
     background-color: gray;
   }
 }
