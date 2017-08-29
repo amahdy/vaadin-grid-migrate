@@ -50,7 +50,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -752,22 +751,27 @@ public class TableExamples extends CustomComponent {
 
     public Component _020_contextMenu() {
         // Have a table with some data
-        final Gridv7 table = new Gridv7("My Table", Helper.generateContent());
+        List<Scientist> scientists = Helper.generateScientists();
+        final Grid<Scientist> table = new Grid<>(Scientist.class);
+        table.setCaption("My Table");
+        table.setItems(scientists);
 
         ContextMenu ctxMenu = new ContextMenu(table, true);
         ctxMenu.addItem("Add After", evt -> {
-            Object itemId;
-            if (table.getSelectedRow() != null) // Clicked on an item
-                itemId = table.getContainerDataSource().addItemAfter(table.getSelectedRow());
+            Scientist newItem = new Scientist();
+            newItem.setName("Someone");
+            newItem.setCity("Somewhere");
+            newItem.setYear(1901);
+            Scientist selected = table.asSingleSelect().getValue();
+            if (selected != null) // Clicked on an item
+                scientists.add(scientists.indexOf(selected)+1, newItem);
             else
-                itemId = table.getContainerDataSource().addItem();
-            Item item = table.getContainerDataSource().getItem(itemId);
-            item.getItemProperty("name").setValue("Someone");
-            item.getItemProperty("city").setValue("Somewhere");
-            item.getItemProperty("year").setValue(1901);
+                scientists.remove(selected);
+            table.setItems(scientists);
         });
         ctxMenu.addItem("Delete Item", evt -> {
-            table.getContainerDataSource().removeItem(table.getSelectedRow());
+            scientists.remove(table.asSingleSelect().getValue());
+            table.setItems(scientists);
         });
         return table;
     }
