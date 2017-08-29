@@ -2,7 +2,6 @@ package net.amahdy.vaadin.demo.grid;
 
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
-import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.data.sort.SortDirection;
@@ -23,6 +22,7 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Item;
@@ -31,9 +31,7 @@ import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.data.util.PropertyValueGenerator;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
@@ -47,7 +45,6 @@ import com.vaadin.v7.ui.Form;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.v7.ui.renderers.ImageRenderer;
 import net.amahdy.vaadin.demo.grid.data.Bean;
 import net.amahdy.vaadin.demo.grid.data.Bodies;
 import net.amahdy.vaadin.demo.grid.data.ComponentBean;
@@ -63,7 +60,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
@@ -737,42 +733,20 @@ public class TableExamples extends CustomComponent {
                 new Planet("Neptune", 0, 0, 0, 0, false),
         };
 
-        // Put the beans to a container
-        BeanItemContainer<Planet> bic = new BeanItemContainer<>(Planet.class);
-        bic.addAll(Arrays.asList(planets));
-
-        // Add an icon property
-        GeneratedPropertyContainer gpc = new GeneratedPropertyContainer(bic);
-        gpc.addGeneratedProperty("icon", new PropertyValueGenerator<Resource>() {
-
-            @Override
-            public Resource getValue(Item item, Object itemId,
-                                     Object propertyId) {
-                // We have the icons in a theme folder. We just need to
-                // generate the path according to the data.
-                return new ThemeResource("img/planets/" +
-                        item.getItemProperty("name").getValue().toString() +
-                        "_symbol.png");
-            }
-
-            @Override
-            public Class<Resource> getType() {
-                return Resource.class;
-            }
-        });
-
         // Bind it to a table
-        Gridv7 table = new Gridv7("Custom Column Headers");
+        Grid<Planet> table = new Grid<>("Custom Column Headers");
+        table.setItems(planets);
         table.addStyleName("rowheaders");
-        table.setContainerDataSource(gpc);
         table.setWidth("250px");
-        table.setColumns("icon", "name");
-        table.getColumn("icon").setRenderer(new ImageRenderer());
+        table.addColumn(c ->
+                new ThemeResource("img/planets/" + c.getName() + "_symbol.png"))
+                .setRenderer(new ImageRenderer<>());
+        table.addColumn(Planet::getName).setCaption("Name");
         table.setFrozenColumnCount(1);
 
         // Adjust the table height a bit
-        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
-        table.setHeightByRows(table.getContainerDataSource().size());
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(planets.length);
 
         return table;
     }
