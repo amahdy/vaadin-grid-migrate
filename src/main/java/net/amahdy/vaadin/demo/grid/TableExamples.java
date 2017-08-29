@@ -5,6 +5,7 @@ import com.vaadin.event.Action.Handler;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.UserError;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Button;
@@ -52,6 +53,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -360,29 +362,30 @@ public class TableExamples extends CustomComponent {
     }
 
     public Component _009_reverseByIndex() {
-        VerticalLayout layout = new VerticalLayout();
-
-        Table table = new Table("Normal order");
-        table.addContainerProperty("index", Integer.class, 0);
+        Gridv7 table = new Gridv7("Normal order");
+        table.setWidth("100px");
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty("index", Integer.class, 0);
         for (int i = 0; i < 5; i++)
-            table.addItem(new Object[]{i}, i);
-        table.setSortContainerPropertyId("index");
-        table.setSortAscending(true);
+            container.getItem(container.addItem()).getItemProperty("index").setValue(i);
+        table.setContainerDataSource(container);
+        table.sort("index", SortDirection.ASCENDING);
 
-        Table reverse = new Table("Reverse order");
-        reverse.addContainerProperty("index", Integer.class, 0);
+        Gridv7 reverse = new Gridv7("Reverse order");
+        reverse.setWidth("100px");
+        container = new IndexedContainer();
+        container.addContainerProperty("index", Integer.class, 0);
         for (int i = 0; i < 5; i++)
-            reverse.addItem(new Object[]{i}, i);
-        reverse.setSortContainerPropertyId("index");
-        reverse.setSortAscending(false);
+            container.getItem(container.addItem()).getItemProperty("index").setValue(i);
+        reverse.setContainerDataSource(container);
+        reverse.sort("index", SortDirection.DESCENDING);
 
-        table.setPageLength(table.size());
-        reverse.setPageLength(reverse.size());
-        HorizontalLayout hor = new HorizontalLayout(table, reverse);
-        hor.setSpacing(true);
-        layout.addComponent(hor);
+        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightByRows(table.getContainerDataSource().size());
+        reverse.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        reverse.setHeightByRows(reverse.getContainerDataSource().size());
 
-        return layout;
+        return new HorizontalLayout(table, reverse);
     }
 
     public Component _010_headers() {
