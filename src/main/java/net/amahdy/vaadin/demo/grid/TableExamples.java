@@ -1,7 +1,6 @@
 package net.amahdy.vaadin.demo.grid;
 
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
+import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.data.sort.SortDirection;
@@ -753,41 +752,22 @@ public class TableExamples extends CustomComponent {
 
     public Component _020_contextMenu() {
         // Have a table with some data
-        final Table table = new Table("My Table", Helper.generateContent());
-        table.setSelectable(true);
-        table.addActionHandler(new Handler() {
+        final Gridv7 table = new Gridv7("My Table", Helper.generateContent());
 
-            Action add = new Action("Add After");
-            Action delete = new Action("Delete Item");
-
-            @Override
-            public void handleAction(Action action, Object sender, Object target) {
-                if (action == add) {
-                    Object itemId;
-                    if (target != null) // Clicked on an item
-                        itemId = table.addItemAfter(target);
-                    else
-                        itemId = table.addItem();
-                    Item item = table.getItem(itemId);
-                    item.getItemProperty("name").setValue("Someone");
-                    item.getItemProperty("city").setValue("Somewhere");
-                    item.getItemProperty("year").setValue(1901);
-                } else if (action == delete) {
-                    table.removeItem(target);
-                }
-            }
-
-            @Override
-            public Action[] getActions(Object target, Object sender) {
-                ArrayList<Action> actions = new ArrayList<>();
-                actions.add(add);
-
-                // Enable deleting only if clicked on an item
-                if (target != null)
-                    actions.add(delete);
-
-                return actions.toArray(new Action[actions.size()]);
-            }
+        ContextMenu ctxMenu = new ContextMenu(table, true);
+        ctxMenu.addItem("Add After", evt -> {
+            Object itemId;
+            if (table.getSelectedRow() != null) // Clicked on an item
+                itemId = table.getContainerDataSource().addItemAfter(table.getSelectedRow());
+            else
+                itemId = table.getContainerDataSource().addItem();
+            Item item = table.getContainerDataSource().getItem(itemId);
+            item.getItemProperty("name").setValue("Someone");
+            item.getItemProperty("city").setValue("Somewhere");
+            item.getItemProperty("year").setValue(1901);
+        });
+        ctxMenu.addItem("Delete Item", evt -> {
+            table.getContainerDataSource().removeItem(table.getSelectedRow());
         });
         return table;
     }
