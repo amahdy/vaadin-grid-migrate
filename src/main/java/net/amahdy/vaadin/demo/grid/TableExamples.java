@@ -53,6 +53,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -1122,7 +1123,7 @@ public class TableExamples extends CustomComponent {
         IndexedContainer container = Helper.generateContent();
 
         // Create to table to show it
-        Table table = new Table("Scrolled Table");
+        Gridv7 table = new Gridv7("Scrolled Table");
         table.setContainerDataSource(container);
 
         // Pick up some item
@@ -1130,10 +1131,11 @@ public class TableExamples extends CustomComponent {
 
         Button button = new Button("Scroll to item #" + itemId, evt -> {
             // Scroll the table to that item
-            table.setCurrentPageFirstItemId(itemId);
+            table.scrollTo(itemId);
         });
 
-        table.setPageLength(10);
+        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightByRows(10);
         layout.addComponents(table, button);
 
         return layout;
