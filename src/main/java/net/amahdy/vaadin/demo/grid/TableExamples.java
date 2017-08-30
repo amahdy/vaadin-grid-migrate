@@ -31,6 +31,7 @@ import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
@@ -50,6 +51,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -777,55 +779,47 @@ public class TableExamples extends CustomComponent {
     }
 
     public Component _021_filtering() {
-        final Table table = new Table("Table with column filters");
-        table.addContainerProperty("Name", String.class, null);
-        table.addContainerProperty("Born", Integer.class, null);
-
-        // Insert the filter row
-        final Integer filterItemId = 0;
-        table.addItem(filterItemId);
+        IndexedContainer container = new IndexedContainer();
+        final Gridv7 table = new Gridv7("Table with column filters");
+        container.addContainerProperty("Name", String.class, null);
+        container.addContainerProperty("Born", Integer.class, null);
 
         // Insert this data
-        Object people[][] = {{"Galileo", 1564},
+        Object people[][] = {
+                {"Galileo", 1564},
                 {"Monnier", 1715},
                 {"Väisälä", 1891},
                 {"Oterma", 1915},
-                {"Valtaoja", 1951}};
+                {"Valtaoja", 1951}
+        };
 
         // Insert the data
-        for (int i = 0; i < people.length; i++)
-            table.addItem(people[i], i + 1);
+        for (Object[] p: people) {
+            Object itemID = container.addItem();
+            container.getItem(itemID).getItemProperty("Name").setValue(p[0]);
+            container.getItem(itemID).getItemProperty("Born").setValue(p[1]);
+        }
+        table.setContainerDataSource(container);
 
-        table.setTableFieldFactory(new DefaultFieldFactory() {
-
-            @Override
-            public Field<?> createField(Container container, Object itemId,
-                                        final Object propertyId, Component uiContext) {
-                final TextField tf = new TextField();
-                tf.setNullRepresentation("");
-                if (itemId != filterItemId)
-                    tf.setReadOnly(true);
-                else {
-                    tf.addValueChangeListener(evt -> {
-
-                            IndexedContainer c = (IndexedContainer)
-                                    table.getContainerDataSource();
-
-                            // Remove old filter
-                            c.removeContainerFilters(propertyId);
-
-                            // Set new filter
-                            String filter = tf.getValue();
-                            if (filter != null)
-                                c.addContainerFilter(propertyId, filter, true, false);
-                    });
-                    tf.setImmediate(true);
-                }
-                return tf;
-            }
+        com.vaadin.ui.TextField nameFilter = new com.vaadin.ui.TextField();
+        nameFilter.addValueChangeListener(evt -> {
+            // Remove old filter
+            container.removeContainerFilters("Name");
+            // Set new filter
+            container.addContainerFilter(
+                    new SimpleStringFilter("Name", evt.getValue(), true, false));
         });
-        table.setEditable(true);
-        table.setImmediate(true);
+        com.vaadin.ui.TextField bornFilter = new com.vaadin.ui.TextField();
+        bornFilter.addValueChangeListener(evt -> {
+            container.removeContainerFilters("Born");
+            container.addContainerFilter(
+                    new SimpleStringFilter("Born", evt.getValue(), true, false));
+        });
+
+        Gridv7.HeaderRow filterRow = table.appendHeaderRow();
+        filterRow.getCell("Name").setComponent(nameFilter);
+        filterRow.getCell("Born").setComponent(bornFilter);
+
         return table;
     }
 
