@@ -53,7 +53,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -1119,22 +1118,22 @@ public class TableExamples extends CustomComponent {
     public Component _026_scrollToItem() {
         VerticalLayout layout = new VerticalLayout();
 
-        // Have some data
-        IndexedContainer container = Helper.generateContent();
+        List<Scientist> items = Helper.generateScientists();
 
         // Create to table to show it
-        Gridv7 table = new Gridv7("Scrolled Table");
-        table.setContainerDataSource(container);
+        Grid<Scientist> table = new Grid<>(Scientist.class);
+        table.setCaption("Scrolled Table");
+        table.setItems(items);
 
         // Pick up some item
-        Object itemId = container.getIdByIndex(container.size() / 2);
+        int rowIndex = items.size() / 2;
 
-        Button button = new Button("Scroll to item #" + itemId, evt -> {
+        Button button = new Button("Scroll to item #" + rowIndex, evt -> {
             // Scroll the table to that item
-            table.scrollTo(itemId);
+            table.scrollTo(rowIndex);
         });
 
-        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightMode(HeightMode.ROW);
         table.setHeightByRows(10);
         layout.addComponents(table, button);
 
