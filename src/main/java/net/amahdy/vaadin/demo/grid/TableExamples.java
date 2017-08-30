@@ -4,7 +4,6 @@ import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.server.UserError;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.grid.HeightMode;
@@ -30,7 +29,6 @@ import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.IndexedContainer;
@@ -53,6 +51,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -1454,38 +1453,21 @@ public class TableExamples extends CustomComponent {
         beans.addItem(new Bean("Java Bean", 0.0));
 
         // This is the buffered editable table
-        final Table editable = new Table("Editable");
-        editable.setEditable(true);
-        editable.setBuffered(true);
+        final Gridv7 editable = new Gridv7("Editable");
+        editable.setEditorEnabled(true);
+        editable.setEditorBuffered(false);
         editable.setContainerDataSource(beans);
 
-        // Set all fields as immediate
-        editable.setTableFieldFactory(new DefaultFieldFactory() {
-
-            @Override
-            public Field<?> createField(Container container, Object itemId,
-                                        Object propertyId, Component uiContext) {
-                AbstractField<?> field = (AbstractField<?>)
-                        super.createField(container, itemId,
-                                propertyId, uiContext);
-                field.setImmediate(true);
-                field.setBuffered(true);
-                return field;
-            }
-        });
-
-        final Button save = new Button("Save");
-        save.addClickListener((ClickListener) event -> {
+        final Button save = new Button("Save", event -> {
             try {
-                save.setComponentError(null); // Clear
-                editable.commit();
-            } catch (Validator.InvalidValueException e) {
-                save.setComponentError(new UserError("Not valid"));
+                editable.getEditorFieldGroup().commit();
+            } catch (FieldGroup.CommitException e) {
+                e.printStackTrace();
             }
         });
 
         // Read-only table
-        Table rotable = new Table("Rotable");
+        Gridv7 rotable = new Gridv7("Rotable");
         rotable.setContainerDataSource(beans);
 
         HorizontalLayout hor = new HorizontalLayout();
