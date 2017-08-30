@@ -53,7 +53,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -62,6 +61,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
@@ -1144,20 +1144,18 @@ public class TableExamples extends CustomComponent {
     public Component _027_removeAllItems() {
         VerticalLayout layout = new VerticalLayout();
 
-        // Have some data
-        final IndexedContainer container = Helper.generateContent();
-
         // Create to table to show it
-        final Gridv7 table = new Gridv7("Table with Stuff");
-        table.setContainerDataSource(container);
+        final Grid<Scientist> table = new Grid<>(Scientist.class);
+        table.setCaption("Table with Stuff");
+        table.setItems(Helper.generateScientists());
         layout.addComponent(table);
 
         Button recreate = new Button("Recreate Data");
         recreate.addClickListener((ClickListener) event -> {
-            container.removeAllItems();
+            table.setItems( Collections.emptyList());
 
             // Add some content to it
-            Helper.addContent(container);
+            table.setItems(Helper.generateScientists());
         });
         layout.addComponent(recreate);
 
