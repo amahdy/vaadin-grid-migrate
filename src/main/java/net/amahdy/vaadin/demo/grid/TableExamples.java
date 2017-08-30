@@ -53,6 +53,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -1147,7 +1148,7 @@ public class TableExamples extends CustomComponent {
         final IndexedContainer container = Helper.generateContent();
 
         // Create to table to show it
-        final Table table = new Table("Table with Stuff");
+        final Gridv7 table = new Gridv7("Table with Stuff");
         table.setContainerDataSource(container);
         layout.addComponent(table);
 
