@@ -1,6 +1,8 @@
 package net.amahdy.vaadin.demo.grid;
 
 import com.vaadin.contextmenu.ContextMenu;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.data.sort.SortDirection;
@@ -21,6 +23,7 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
@@ -31,7 +34,6 @@ import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
@@ -51,7 +53,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -778,11 +779,15 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
+    String nameFilterTxt="", bornFilterTxt="";
+    private void applyFilter(ListDataProvider<Object[]> listDataProvider) {
+        listDataProvider.setFilter(o ->
+                String.valueOf(o[0]).toLowerCase().contains(nameFilterTxt.toLowerCase()) &&
+                String.valueOf(o[1]).contains(bornFilterTxt)
+        );
+    }
     public Component _021_filtering() {
-        IndexedContainer container = new IndexedContainer();
-        final Gridv7 table = new Gridv7("Table with column filters");
-        container.addContainerProperty("Name", String.class, null);
-        container.addContainerProperty("Born", Integer.class, null);
+        final Grid<Object[]> table = new Grid<>("Table with column filters");
 
         // Insert this data
         Object people[][] = {
@@ -793,30 +798,24 @@ public class TableExamples extends CustomComponent {
                 {"Valtaoja", 1951}
         };
 
-        // Insert the data
-        for (Object[] p: people) {
-            Object itemID = container.addItem();
-            container.getItem(itemID).getItemProperty("Name").setValue(p[0]);
-            container.getItem(itemID).getItemProperty("Born").setValue(p[1]);
-        }
-        table.setContainerDataSource(container);
+        ListDataProvider<Object[]> listDataProvider = DataProvider.ofItems(people);
+        table.setDataProvider(listDataProvider);
+        table.addColumn(p -> p[0]).setCaption("Name").setId("Name");
+        table.addColumn(p -> p[1]).setCaption("Born").setId("Born");
 
         com.vaadin.ui.TextField nameFilter = new com.vaadin.ui.TextField();
         nameFilter.addValueChangeListener(evt -> {
-            // Remove old filter
-            container.removeContainerFilters("Name");
-            // Set new filter
-            container.addContainerFilter(
-                    new SimpleStringFilter("Name", evt.getValue(), true, false));
-        });
-        com.vaadin.ui.TextField bornFilter = new com.vaadin.ui.TextField();
-        bornFilter.addValueChangeListener(evt -> {
-            container.removeContainerFilters("Born");
-            container.addContainerFilter(
-                    new SimpleStringFilter("Born", evt.getValue(), true, false));
+            nameFilterTxt = evt.getValue();
+            applyFilter(listDataProvider);
         });
 
-        Gridv7.HeaderRow filterRow = table.appendHeaderRow();
+        com.vaadin.ui.TextField bornFilter = new com.vaadin.ui.TextField();
+        bornFilter.addValueChangeListener(evt -> {
+            bornFilterTxt = evt.getValue();
+            applyFilter(listDataProvider);
+        });
+
+        HeaderRow filterRow = table.appendHeaderRow();
         filterRow.getCell("Name").setComponent(nameFilter);
         filterRow.getCell("Born").setComponent(bornFilter);
 
