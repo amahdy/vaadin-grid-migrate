@@ -779,7 +779,7 @@ public class TableExamples extends CustomComponent {
         return table;
     }
 
-    String nameFilterTxt="", bornFilterTxt="";
+    private String nameFilterTxt="", bornFilterTxt="";
     private void applyFilter(ListDataProvider<Object[]> listDataProvider) {
         listDataProvider.setFilter(o ->
                 String.valueOf(o[0]).toLowerCase().contains(nameFilterTxt.toLowerCase()) &&
