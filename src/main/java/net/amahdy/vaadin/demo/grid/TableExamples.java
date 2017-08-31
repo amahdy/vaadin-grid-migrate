@@ -52,6 +52,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -1583,16 +1584,11 @@ public class TableExamples extends CustomComponent {
         IndexedContainer container = Helper.generateContent();
 
         // The table to edit
-        Table table = new Table(null, container) {
-
-            public void refreshRowCache() {
-                super.refreshRowCache();
-                layout.addComponent(new Label("Refreshed row cache"));
-            }
-        };
+        Gridv7 table = new Gridv7(null, container);
         table.setWidth("500px");
-        table.setPageLength(8);
-        table.setEditable(true);
+        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightByRows(8);
+        table.setEditorEnabled(true);
 
         layout.addComponent(table);
 
