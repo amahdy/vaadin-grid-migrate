@@ -1,6 +1,7 @@
 package net.amahdy.vaadin.demo.grid;
 
 import com.vaadin.contextmenu.ContextMenu;
+import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.ThemeResource;
@@ -51,7 +52,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -1443,41 +1443,48 @@ public class TableExamples extends CustomComponent {
         VerticalLayout layout = new VerticalLayout();
 
         // The data model + some data
-        BeanItemContainer<Bean> beans =
-                new BeanItemContainer<>(Bean.class);
-        beans.addBean(new Bean("Mung bean", 1452.0));
-        beans.addBean(new Bean("Chickpea", 686.0));
-        beans.addBean(new Bean("Lentil", 1477.0));
-        beans.addBean(new Bean("Common bean", 129.0));
-        beans.addBean(new Bean("Soybean", 1866.0));
-        beans.addItem(new Bean("Java Bean", 0.0));
+        Bean[] beans = {
+            new Bean("Mung bean", 1452.0),
+            new Bean("Chickpea", 686.0),
+            new Bean("Lentil", 1477.0),
+            new Bean("Common bean", 129.0),
+            new Bean("Soybean", 1866.0),
+            new Bean("Java Bean", 0.0)
+        };
 
         // This is the buffered editable table
-        final Gridv7 editable = new Gridv7("Editable");
-        editable.setEditorEnabled(true);
-        editable.setEditorBuffered(false);
-        editable.setContainerDataSource(beans);
-
-        final Button save = new Button("Save", event -> {
-            try {
-                editable.getEditorFieldGroup().commit();
-            } catch (FieldGroup.CommitException e) {
-                e.printStackTrace();
-            }
-        });
+        final Grid<Bean> editable = new Grid<>("Editable");
+        editable.getEditor().setEnabled(true);
+        editable.getEditor().setBuffered(false);
+        editable.setItems(beans);
+        editable.addColumn(Bean::getName)
+                .setEditorBinding(editable.getEditor().getBinder()
+                        .bind(new com.vaadin.ui.TextField(), Bean::getName, Bean::setName))
+                .setCaption("Name");
+        editable.addColumn(Bean::getEnergy)
+                .setEditorBinding(editable.getEditor().getBinder()
+                        .forField(new com.vaadin.ui.TextField())
+                        .withConverter(new StringToDoubleConverter("Must be double"))
+                        .bind(Bean::getEnergy, Bean::setEnergy))
+                .setCaption("Energy");
 
         // Read-only table
-        Gridv7 rotable = new Gridv7("Rotable");
-        rotable.setContainerDataSource(beans);
+        Grid<Bean> rotable = new Grid<>(Bean.class);
+        rotable.setCaption("Rotable");
+        rotable.setItems(beans);
+
+        final Button save = new Button("Update", event -> {
+            rotable.getDataProvider().refreshAll();
+        });
 
         HorizontalLayout hor = new HorizontalLayout();
         hor.addComponent(editable);
-        hor.addComponent(rotable);
-        hor.setSpacing(true);
-        layout.addComponent(hor);
+        hor.addComponent(layout);
+        layout.addComponent(rotable);
         layout.addComponent(save);
+        layout.setMargin(false);
 
-        return layout;
+        return hor;
     }
 
     public Component _034_spreadsheet() {
