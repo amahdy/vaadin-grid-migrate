@@ -52,7 +52,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -1578,21 +1577,15 @@ public class TableExamples extends CustomComponent {
     }
 
     public Component _035_longTable() {
-        VerticalLayout layout = new VerticalLayout();
-
-        // A lot of example data
-        IndexedContainer container = Helper.generateContent();
 
         // The table to edit
-        Gridv7 table = new Gridv7(null, container);
+        Grid<Scientist> table = new Grid<>(null, Helper.generateScientists());
         table.setWidth("500px");
-        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightMode(HeightMode.ROW);
         table.setHeightByRows(8);
-        table.setEditorEnabled(true);
+        table.getEditor().setEnabled(true);
 
-        layout.addComponent(table);
-
-        return layout;
+        return table;
     }
 
     public Component _036_adding() {
