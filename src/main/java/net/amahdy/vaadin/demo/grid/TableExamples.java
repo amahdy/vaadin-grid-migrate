@@ -52,6 +52,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -386,24 +387,30 @@ public class TableExamples extends CustomComponent {
     }
 
     public Component _010_headers() {
-        Table table = new Table("Custom Table Headers");
+        Gridv7 table = new Gridv7("Custom Table Headers");
 
-        table.addContainerProperty("lastname", String.class, null);
-        table.addContainerProperty("born", Integer.class, null);
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty("lastname", String.class, null);
+        container.addContainerProperty("born", Integer.class, null);
+        table.setContainerDataSource(container);
 
         // Insert some data
         Object people[][] = {{"Galileo", 1564},
                 {"Väisälä", 1891},
                 {"Valtaoja", 1951}};
-        for (int i = 0; i < people.length; i++)
-            table.addItem(people[i], i);
+        for (Object[] p: people) {
+            Object itemId = container.addItem();
+            container.getItem(itemId).getItemProperty("lastname").setValue(p[0]);
+            container.getItem(itemId).getItemProperty("born").setValue(p[1]);
+        }
 
         // Set nicer header names
-        table.setColumnHeader("lastname", "Name");
-        table.setColumnHeader("born", "Born In");
+        table.getColumn("lastname").setHeaderCaption("Name");
+        table.getColumn("born").setHeaderCaption("Born In");
 
         // Adjust the table height a bit
-        table.setPageLength(table.size());
+        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
+        table.setHeightByRows(container.size());
 
         return table;
     }
