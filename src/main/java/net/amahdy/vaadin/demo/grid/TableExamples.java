@@ -52,7 +52,6 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
-import net.amahdy.vaadin.demo.grid.util.Gridv7;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -387,30 +386,21 @@ public class TableExamples extends CustomComponent {
     }
 
     public Component _010_headers() {
-        Gridv7 table = new Gridv7("Custom Table Headers");
-
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("lastname", String.class, null);
-        container.addContainerProperty("born", Integer.class, null);
-        table.setContainerDataSource(container);
+        Grid<Object[]> table = new Grid<>("Custom Table Headers");
 
         // Insert some data
         Object people[][] = {{"Galileo", 1564},
                 {"Väisälä", 1891},
                 {"Valtaoja", 1951}};
-        for (Object[] p: people) {
-            Object itemId = container.addItem();
-            container.getItem(itemId).getItemProperty("lastname").setValue(p[0]);
-            container.getItem(itemId).getItemProperty("born").setValue(p[1]);
-        }
+        table.setItems(people);
 
         // Set nicer header names
-        table.getColumn("lastname").setHeaderCaption("Name");
-        table.getColumn("born").setHeaderCaption("Born In");
+        table.addColumn(o -> o[0]).setCaption("Name");
+        table.addColumn(o -> o[1]).setCaption("Born In");
 
         // Adjust the table height a bit
-        table.setHeightMode(com.vaadin.v7.shared.ui.grid.HeightMode.ROW);
-        table.setHeightByRows(container.size());
+        table.setHeightMode(HeightMode.ROW);
+        table.setHeightByRows(people.length);
 
         return table;
     }
