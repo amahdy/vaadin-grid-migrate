@@ -52,6 +52,7 @@ import net.amahdy.vaadin.demo.grid.data.ComponentBean;
 import net.amahdy.vaadin.demo.grid.data.ItemPropertyId;
 import net.amahdy.vaadin.demo.grid.data.Planet;
 import net.amahdy.vaadin.demo.grid.data.Scientist;
+import net.amahdy.vaadin.demo.grid.util.GridComponent;
 import net.amahdy.vaadin.demo.grid.util.Helper;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerFooter;
 import net.amahdy.vaadin.demo.grid.util.KbdHandlerSpreadsheet;
@@ -121,7 +122,9 @@ public class TableExamples extends CustomComponent {
         });
         layout.addComponent(table);
 
-        return layout;
+        GridComponent g = new GridComponent(Helper.generateScientistsJson());
+
+        return g;
     }
 
     public Component _002_multiSelect() {

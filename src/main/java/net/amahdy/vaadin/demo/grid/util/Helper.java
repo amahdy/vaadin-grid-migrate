@@ -12,6 +12,20 @@ import java.util.List;
  */
 public abstract class Helper {
 
+    public static String generateScientistsJson() {
+        List<Scientist> scientists = generateScientists();
+        List<String> items = new ArrayList<>();
+        for (Scientist scientist: scientists) {
+            items.add("{"
+                    + "\"name\":\"" + scientist.getName() + "\","
+                    + "\"city\":\"" + scientist.getCity() + "\","
+                    + "\"year\":\"" + scientist.getYear() + "\""
+                    + "}"
+            );
+        }
+        return "[" + String.join(",", items) + "]";
+    }
+
     public static List<Scientist> generateScientists() {
         List<Scientist> scientists = new ArrayList<>();
         String[] firstnames = new String[]{"Isaac", "Ada", "Charles", "Douglas"};
